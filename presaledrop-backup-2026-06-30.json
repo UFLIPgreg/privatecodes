@@ -1,0 +1,757 @@
+{
+  "flippers": [
+    {
+      "id": "bgq8pzolj2gmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "AshDaad",
+      "userId": "202256199700185088",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "cthbici96e7mqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Donna Miller",
+      "userId": "954144162687643679",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "oi6t5d2605hmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Flipschwartz",
+      "userId": "1120797073235775629",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "221xspec02omqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Hannah",
+      "userId": "954203792935637024",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "ffhn6vb5z9dmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "JC",
+      "userId": "1053515335619330138",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "98m7dimhnthmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Melanie",
+      "userId": "981764029599068210",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "sxdm4an1tjmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Melitwin",
+      "userId": "1097517567607844884",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "xdmlogb514mqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Spidey702",
+      "userId": "1466159674767310910",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "jfpggtmrmzmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Steph Dorato",
+      "userId": "1029080755218956348",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "n3r2edfqah8mqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Bri",
+      "userId": "1078784696034533558",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "hlaakjyfnopmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Danielle",
+      "userId": "1108402942073127004",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "r0qei2wqhx7mqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Elyse",
+      "userId": "1120797073235775629",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "l3jqzlnd82bmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Gilternj",
+      "userId": "1027281508605640725",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "9qt1o3zvnuvmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Lenisha D",
+      "userId": "862154277522112533",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "t6s8u4o4pnjmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Laurie",
+      "userId": "401254395729149953",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "7i1ihz6e2ixmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Lisa",
+      "userId": "939512678500683806",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "rnoxic2dt0amqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Mandapanda22",
+      "userId": "1016815702038040667",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "64fvlxw1zmgmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Mekanix",
+      "userId": "860285505086291968",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "gx8aca5w3amqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "NikkiJ",
+      "userId": "907759969812750369",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "t0enql3gw1rmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "RJdreams",
+      "userId": "1000153710464336023",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "h8dhhs1ck27mqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Rose Schwartz",
+      "userId": "624358233674612736",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "a2aywy2gybmmqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "ToniaM5",
+      "userId": "1000477199478046720",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "009uuz6dmulg6mqzv4o8m",
+      "createdAt": 1782776553142,
+      "name": "",
+      "username": "Halle",
+      "userId": "1107706758597726228",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "rkzvhco62bfmqzv57va",
+      "createdAt": 1782776578582,
+      "name": "Kolleen",
+      "username": "kokofletch",
+      "userId": "662735748469882921",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "mh54s2wp3gmqzvrrtc",
+      "createdAt": 1782777630864,
+      "name": "Huy",
+      "username": "Huy",
+      "userId": "1241001018683166799",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    },
+    {
+      "id": "kqkeckdl7umqzvu72h",
+      "createdAt": 1782777743945,
+      "name": "Mriah",
+      "username": "Mriah",
+      "userId": "883027349044617298",
+      "email": "",
+      "phone": "",
+      "notes": "",
+      "active": true
+    }
+  ],
+  "presales": [
+    {
+      "id": "n1gdob0gj2qmqzw72ob",
+      "name": "PV0 TEST2",
+      "date": "2026-06-30",
+      "brokerName": "",
+      "brokerCharge": "",
+      "status": "complete",
+      "availableFlipperIds": [
+        "bgq8pzolj2gmqzv4o8m",
+        "cthbici96e7mqzv4o8m",
+        "oi6t5d2605hmqzv4o8m",
+        "221xspec02omqzv4o8m",
+        "ffhn6vb5z9dmqzv4o8m",
+        "98m7dimhnthmqzv4o8m",
+        "sxdm4an1tjmqzv4o8m",
+        "xdmlogb514mqzv4o8m",
+        "jfpggtmrmzmqzv4o8m",
+        "n3r2edfqah8mqzv4o8m",
+        "hlaakjyfnopmqzv4o8m",
+        "r0qei2wqhx7mqzv4o8m",
+        "l3jqzlnd82bmqzv4o8m",
+        "9qt1o3zvnuvmqzv4o8m",
+        "t6s8u4o4pnjmqzv4o8m",
+        "7i1ihz6e2ixmqzv4o8m",
+        "rnoxic2dt0amqzv4o8m",
+        "64fvlxw1zmgmqzv4o8m",
+        "gx8aca5w3amqzv4o8m",
+        "t0enql3gw1rmqzv4o8m",
+        "h8dhhs1ck27mqzv4o8m",
+        "a2aywy2gybmmqzv4o8m",
+        "009uuz6dmulg6mqzv4o8m",
+        "rkzvhco62bfmqzv57va",
+        "mh54s2wp3gmqzvrrtc",
+        "kqkeckdl7umqzvu72h"
+      ],
+      "codes": [
+        "A1B7K",
+        "A3M9X",
+        "A8Q4N",
+        "B2H6T",
+        "B5R1W",
+        "B9K3P",
+        "C1V8L",
+        "C4N2Y",
+        "C7X5M",
+        "D2Q9H",
+        "D6P4R",
+        "D8W1K",
+        "E3L7V",
+        "E5T9N",
+        "E8H2X",
+        "F1M6Q",
+        "F4Y8P",
+        "F7K3W",
+        "G2R5L",
+        "G9N1T",
+        "H3V7M",
+        "H6Q2K",
+        "H8P4Y",
+        "J1X9R",
+        "J5L3N",
+        "J7T8H",
+        "K2M4V",
+        "K6W1Q",
+        "K9R5X",
+        "L3H8P",
+        "L7N2K",
+        "L9Y4T",
+        "M1Q6R",
+        "M5V3H",
+        "M8K7N",
+        "N2X5L",
+        "N4P9W",
+        "N7R1M",
+        "P3T6K",
+        "P8H2V",
+        "Q1N7Y",
+        "Q4M8L",
+        "Q6X3P",
+        "R1K5T",
+        "R7V9H",
+        "T2L4Q",
+        "T5Y8M",
+        "V1P6N",
+        "W3R7K",
+        "X9T2L"
+      ],
+      "assignments": [
+        {
+          "flipperId": "bgq8pzolj2gmqzv4o8m",
+          "codes": [
+            "A1B7K",
+            "A3M9X"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778448547,
+          "error": null
+        },
+        {
+          "flipperId": "cthbici96e7mqzv4o8m",
+          "codes": [
+            "A8Q4N",
+            "B2H6T"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778450076,
+          "error": null
+        },
+        {
+          "flipperId": "oi6t5d2605hmqzv4o8m",
+          "codes": [
+            "B5R1W",
+            "B9K3P"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778450840,
+          "error": null
+        },
+        {
+          "flipperId": "221xspec02omqzv4o8m",
+          "codes": [
+            "C1V8L",
+            "C4N2Y"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778451796,
+          "error": null
+        },
+        {
+          "flipperId": "ffhn6vb5z9dmqzv4o8m",
+          "codes": [
+            "C7X5M",
+            "D2Q9H"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778453147,
+          "error": null
+        },
+        {
+          "flipperId": "98m7dimhnthmqzv4o8m",
+          "codes": [
+            "D6P4R",
+            "D8W1K"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778454891,
+          "error": null
+        },
+        {
+          "flipperId": "sxdm4an1tjmqzv4o8m",
+          "codes": [
+            "E3L7V",
+            "E5T9N"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778457472,
+          "error": null
+        },
+        {
+          "flipperId": "xdmlogb514mqzv4o8m",
+          "codes": [
+            "E8H2X",
+            "F1M6Q"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778458882,
+          "error": null
+        },
+        {
+          "flipperId": "jfpggtmrmzmqzv4o8m",
+          "codes": [
+            "F4Y8P",
+            "F7K3W"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778460420,
+          "error": null
+        },
+        {
+          "flipperId": "n3r2edfqah8mqzv4o8m",
+          "codes": [
+            "G2R5L",
+            "G9N1T"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778462265,
+          "error": null
+        },
+        {
+          "flipperId": "hlaakjyfnopmqzv4o8m",
+          "codes": [
+            "H3V7M",
+            "H6Q2K"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778463802,
+          "error": null
+        },
+        {
+          "flipperId": "r0qei2wqhx7mqzv4o8m",
+          "codes": [
+            "H8P4Y",
+            "J1X9R"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778464723,
+          "error": null
+        },
+        {
+          "flipperId": "l3jqzlnd82bmqzv4o8m",
+          "codes": [
+            "J5L3N",
+            "J7T8H"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778466196,
+          "error": null
+        },
+        {
+          "flipperId": "9qt1o3zvnuvmqzv4o8m",
+          "codes": [
+            "K2M4V",
+            "K6W1Q"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778467484,
+          "error": null
+        },
+        {
+          "flipperId": "t6s8u4o4pnjmqzv4o8m",
+          "codes": [
+            "K9R5X",
+            "L3H8P"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778470965,
+          "error": null
+        },
+        {
+          "flipperId": "7i1ihz6e2ixmqzv4o8m",
+          "codes": [
+            "L7N2K",
+            "L9Y4T"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778472168,
+          "error": null
+        },
+        {
+          "flipperId": "rnoxic2dt0amqzv4o8m",
+          "codes": [
+            "M1Q6R",
+            "M5V3H"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778473729,
+          "error": null
+        },
+        {
+          "flipperId": "64fvlxw1zmgmqzv4o8m",
+          "codes": [
+            "M8K7N",
+            "N2X5L"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778475063,
+          "error": null
+        },
+        {
+          "flipperId": "gx8aca5w3amqzv4o8m",
+          "codes": [
+            "N4P9W",
+            "N7R1M"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778476398,
+          "error": null
+        },
+        {
+          "flipperId": "t0enql3gw1rmqzv4o8m",
+          "codes": [
+            "P3T6K",
+            "P8H2V"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778477947,
+          "error": null
+        },
+        {
+          "flipperId": "h8dhhs1ck27mqzv4o8m",
+          "codes": [
+            "Q1N7Y",
+            "Q4M8L"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778481722,
+          "error": null
+        },
+        {
+          "flipperId": "a2aywy2gybmmqzv4o8m",
+          "codes": [
+            "Q6X3P",
+            "R1K5T"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778483564,
+          "error": null
+        },
+        {
+          "flipperId": "009uuz6dmulg6mqzv4o8m",
+          "codes": [
+            "R7V9H",
+            "T2L4Q"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778484313,
+          "error": null
+        },
+        {
+          "flipperId": "rkzvhco62bfmqzv57va",
+          "codes": [
+            "T5Y8M",
+            "V1P6N"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778485074,
+          "error": null
+        },
+        {
+          "flipperId": "mh54s2wp3gmqzvrrtc",
+          "codes": [
+            "W3R7K"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778488444,
+          "error": null
+        },
+        {
+          "flipperId": "kqkeckdl7umqzvu72h",
+          "codes": [
+            "X9T2L"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778490422,
+          "error": null
+        }
+      ],
+      "notes": "",
+      "draftAlloc": null,
+      "createdAt": 1782778344779
+    },
+    {
+      "id": "fv0d0pug6qmqzv5n89",
+      "name": "PV0 TEST",
+      "date": "2026-07-01",
+      "brokerName": "",
+      "brokerCharge": "",
+      "status": "complete",
+      "availableFlipperIds": [
+        "rkzvhco62bfmqzv57va",
+        "009uuz6dmulg6mqzv4o8m",
+        "oi6t5d2605hmqzv4o8m",
+        "221xspec02omqzv4o8m"
+      ],
+      "codes": [
+        "A7K2M",
+        "B4X9Q",
+        "C8N5R",
+        "D3P7L",
+        "E6T1W",
+        "F9H4Y",
+        "G2V8K",
+        "H5M3Z",
+        "J7Q6N",
+        "K1R9P",
+        "L8W2T",
+        "M4Y7H",
+        "N6K1X",
+        "P3Z8V"
+      ],
+      "assignments": [
+        {
+          "flipperId": "oi6t5d2605hmqzv4o8m",
+          "codes": [
+            "A7K2M",
+            "B4X9Q",
+            "C8N5R",
+            "D3P7L"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782777823390,
+          "error": null
+        },
+        {
+          "flipperId": "221xspec02omqzv4o8m",
+          "codes": [
+            "E6T1W",
+            "F9H4Y",
+            "G2V8K",
+            "H5M3Z"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782777822770,
+          "error": null
+        },
+        {
+          "flipperId": "009uuz6dmulg6mqzv4o8m",
+          "codes": [
+            "J7Q6N",
+            "K1R9P",
+            "L8W2T"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782777452887,
+          "error": null
+        },
+        {
+          "flipperId": "rkzvhco62bfmqzv57va",
+          "codes": [
+            "M4Y7H",
+            "N6K1X",
+            "P3Z8V"
+          ],
+          "sent": true,
+          "failed": false,
+          "sentAt": 1782778144622,
+          "error": null
+        }
+      ],
+      "notes": "",
+      "draftAlloc": null,
+      "createdAt": 1782776598489
+    }
+  ],
+  "settings": {
+    "messageTemplate": "🎟️ **{sale}** presale code(s) for you:\n{codes}"
+  }
+}
