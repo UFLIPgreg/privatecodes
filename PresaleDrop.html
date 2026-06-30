@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PresaleDrop — Code Distribution Manager</title>
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --bg2: #161a22;
+      --bg3: #1e2330;
+      --border: #2a2f3e;
+      --text: #e8eaf0;
+      --text2: #8b90a0;
+      --accent: #5865f2;
+      --accent-hover: #4752c4;
+      --green: #3ba55c;
+      --red: #ed4245;
+      --yellow: #faa61a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; }
+
+    /* NAV */
+    .nav { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; align-items: center; gap: 8px; height: 58px; }
+    .nav-logo { font-size: 17px; font-weight: 800; color: var(--accent); margin-right: 12px; letter-spacing: -0.3px; }
+    .nav-logo em { color: var(--text); font-style: normal; }
+    .nav-tab { padding: 7px 15px; border-radius: 7px; cursor: pointer; color: var(--text2); font-size: 14px; font-weight: 500; border: none; background: none; transition: all 0.15s; }
+    .nav-tab:hover { color: var(--text); background: var(--bg3); }
+    .nav-tab.active { color: var(--text); background: var(--bg3); font-weight: 600; }
+
+    /* MAIN */
+    .main { padding: 32px 28px; max-width: 1120px; margin: 0 auto; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+    .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+    .page-sub { font-size: 13px; color: var(--text2); margin-top: 3px; }
+    .toolbar { display: flex; gap: 10px; align-items: center; }
+
+    /* BUTTONS */
+    .btn { padding: 9px 18px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; line-height: 1; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-ghost { background: transparent; color: var(--text2); border: 1px solid transparent; }
+    .btn-ghost:hover { color: var(--text); background: var(--bg3); border-color: var(--border); }
+    .btn-danger { background: transparent; color: var(--red); border: 1px solid rgba(237,66,69,0.4); }
+    .btn-danger:hover { background: rgba(237,66,69,0.1); border-color: var(--red); }
+    .btn-success { background: var(--green); color: white; border: none; }
+    .btn-success:hover { opacity: 0.85; }
+    .btn-sm { padding: 5px 11px; font-size: 12px; border-radius: 5px; }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+    /* SEARCH */
+    .search { padding: 8px 13px; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-size: 14px; width: 260px; }
+    .search:focus { outline: none; border-color: var(--accent); }
+    .search::placeholder { color: var(--text2); }
+
+    /* TABLE */
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 11px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; padding: 11px 16px; color: var(--text2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 13px 16px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* TRUST SCORES */
+    .trust { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font-size: 14px; font-weight: 800; border: 2px solid; }
+    .t1,.t2,.t3 { color: #ed4245; border-color: rgba(237,66,69,0.35); background: rgba(237,66,69,0.1); }
+    .t4,.t5,.t6 { color: var(--yellow); border-color: rgba(250,166,26,0.35); background: rgba(250,166,26,0.1); }
+    .t7,.t8 { color: var(--green); border-color: rgba(59,165,92,0.35); background: rgba(59,165,92,0.1); }
+    .t9,.t10 { color: var(--accent); border-color: rgba(88,101,242,0.35); background: rgba(88,101,242,0.1); }
+
+    /* BADGES */
+    .badge { padding: 3px 9px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+    .b-active { background: rgba(59,165,92,0.15); color: #3ba55c; }
+    .b-inactive { background: rgba(139,144,160,0.12); color: #8b90a0; }
+    .b-setup { background: rgba(250,166,26,0.15); color: var(--yellow); }
+    .b-distributed { background: rgba(88,101,242,0.15); color: var(--accent); }
+    .b-complete { background: rgba(59,165,92,0.15); color: #3ba55c; }
+    .b-sent { background: rgba(59,165,92,0.15); color: #3ba55c; }
+    .b-pending { background: rgba(139,144,160,0.12); color: #8b90a0; }
+    .b-failed { background: rgba(237,66,69,0.15); color: #ed4245; }
+
+    /* PRESALE CARDS */
+    .presale-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 16px; }
+    .presale-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 11px; padding: 22px; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+    .presale-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .pc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+    .pc-name { font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+    .pc-date { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .pc-stats { display: flex; gap: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .pc-stat-val { font-size: 22px; font-weight: 800; color: var(--accent); }
+    .pc-stat-label { font-size: 11px; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* MODALS */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+    .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 13px; padding: 28px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+    .modal-lg { max-width: 720px; }
+    .modal-xl { max-width: 940px; }
+    .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 22px; letter-spacing: -0.3px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .hidden { display: none !important; }
+
+    /* FORMS */
+    .fg { margin-bottom: 18px; }
+    .label { display: block; font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .input { width: 100%; padding: 10px 13px; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-size: 14px; }
+    .input:focus { outline: none; border-color: var(--accent); }
+    .input::placeholder { color: var(--text2); }
+    textarea.input { resize: vertical; min-height: 72px; font-family: inherit; }
+    .hint { font-size: 12px; color: var(--text2); margin-top: 5px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* TRUST SLIDER */
+    .slider-row { display: flex; align-items: center; gap: 14px; }
+    input[type=range] { flex: 1; -webkit-appearance: none; height: 5px; background: var(--border); border-radius: 10px; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 0 3px rgba(88,101,242,0.2); }
+    .slider-val { font-size: 22px; font-weight: 800; min-width: 32px; text-align: right; }
+
+    /* INNER TABS */
+    .inner-tabs { display: flex; gap: 2px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .inner-tab { padding: 10px 18px; font-size: 14px; font-weight: 600; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+    .inner-tab:hover { color: var(--text); }
+    .inner-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* DISTRIBUTION */
+    .codes-textarea { width: 100%; padding: 12px 14px; height: 160px; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-size: 13px; font-family: 'Courier New', monospace; resize: vertical; }
+    .codes-textarea:focus { outline: none; border-color: var(--accent); }
+    .codes-textarea::placeholder { color: var(--text2); }
+    .alloc-num { width: 62px; padding: 5px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-size: 14px; font-weight: 700; text-align: center; }
+    .alloc-num:focus { outline: none; border-color: var(--accent); }
+    .code-pill { display: inline-block; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 1px 7px; font-family: monospace; font-size: 12px; color: var(--text); }
+
+    /* FLIPPER PICKER */
+    .flipper-list { display: flex; flex-direction: column; gap: 7px; max-height: 320px; overflow-y: auto; padding-right: 4px; }
+    .flipper-item { display: flex; align-items: center; gap: 12px; padding: 10px 13px; border-radius: 7px; background: var(--bg3); border: 1px solid var(--border); cursor: pointer; transition: all 0.12s; user-select: none; }
+    .flipper-item:hover { border-color: rgba(88,101,242,0.4); }
+    .flipper-item.selected { border-color: var(--accent); background: rgba(88,101,242,0.08); }
+    .flipper-item input[type=checkbox] { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
+    .fi-name { font-weight: 700; flex: 1; font-size: 14px; }
+    .fi-meta { font-size: 12px; color: var(--text2); }
+
+    /* INFOBOX */
+    .infobox { background: rgba(88,101,242,0.07); border: 1px solid rgba(88,101,242,0.2); border-radius: 7px; padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 18px; }
+    .infobox strong { color: var(--text); }
+    .warnbox { background: rgba(250,166,26,0.07); border: 1px solid rgba(250,166,26,0.2); border-radius: 7px; padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 18px; }
+
+    /* EMPTY STATE */
+    .empty { text-align: center; padding: 64px 20px; color: var(--text2); }
+    .empty-icon { font-size: 48px; margin-bottom: 14px; }
+    .empty-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .empty-sub { font-size: 14px; margin-bottom: 20px; }
+
+    /* SETTINGS */
+    .settings-wrap { max-width: 500px; }
+    .settings-section { margin-bottom: 36px; }
+    .settings-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .settings-sub { font-size: 13px; color: var(--text2); margin-bottom: 16px; }
+
+    /* TOAST */
+    #toast { position: fixed; bottom: 28px; right: 28px; background: var(--bg2); border: 1px solid var(--border); border-radius: 9px; padding: 13px 20px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 999; max-width: 340px; }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.t-success { border-color: var(--green); }
+    #toast.t-error { border-color: var(--red); }
+    #toast.t-info { border-color: var(--accent); }
+    .toast-icon { font-size: 18px; flex-shrink: 0; }
+
+    /* SPINNER */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.25); border-top-color: white; border-radius: 50%; animation: spin 0.65s linear infinite; display: inline-block; }
+
+    /* PROGRESS */
+    .codes-counter { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+    .codes-counter strong { color: var(--text); }
+    .codes-counter.over strong { color: var(--red); }
+    .progress-bg { height: 5px; background: var(--bg3); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 10px; transition: width 0.3s, background 0.3s; }
+    .progress-fill.over { background: var(--red); }
+
+    /* USER ID HELP */
+    .uid-hint { font-size: 12px; color: var(--text2); margin-top: 5px; }
+    .uid-hint a { color: var(--accent); text-decoration: none; }
+    .uid-hint a:hover { text-decoration: underline; }
+
+    /* BACK BUTTON */
+    .back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text2); cursor: pointer; background: none; border: none; margin-bottom: 20px; padding: 0; }
+    .back-btn:hover { color: var(--text); }
+
+    /* STATUS ICON */
+    .s-icon { font-size: 16px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text2); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">🎟 Presale<em>Drop</em></div>
+  <button class="nav-tab active" onclick="goTab('flippers')">Flippers</button>
+  <button class="nav-tab" onclick="goTab('presales')">Presales</button>
+  <button class="nav-tab" onclick="goTab('settings')">Settings</button>
+  <button class="btn btn-ghost btn-sm" onclick="refreshData()" style="margin-left:auto;font-size:13px" title="Pull latest data from server">↻ Refresh</button>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main" id="main-content"></div>
+
+<!-- LOADER -->
+<div id="loader" class="overlay" style="z-index:300;display:none">
+  <div style="text-align:center">
+    <div class="spin" style="width:32px;height:32px;border-width:3px;margin:0 auto 14px;border-color:rgba(255,255,255,0.15);border-top-color:var(--accent)"></div>
+    <div style="color:var(--text2);font-size:14px">Loading…</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><span class="toast-icon" id="toast-icon">✓</span><span id="toast-msg"></span></div>
+
+<!-- MODALS CONTAINER -->
+<div id="modals"></div>
+
+<script>
+// ─────────────────────────────────────────────
+//  SUPABASE CONFIG
+// ─────────────────────────────────────────────
+const SUPA_URL = 'https://crnfhbapidpmiokbvcet.supabase.co';
+const SUPA_KEY = 'sb_publishable_6VNzvERvKynznvjJqRGLpg_2Stk3vrl';
+
+async function dbGet(table, query='') {
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}${query}`, {
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` }
+  });
+  if (!res.ok) throw new Error(`Load error (${res.status})`);
+  return res.json();
+}
+async function dbUpsert(table, rows) {
+  const data = Array.isArray(rows) ? rows : [rows];
+  if (!data.length) return;
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'resolution=merge-duplicates,return=minimal'
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+}
+async function dbDelete(table, id) {
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` }
+  });
+  if (!res.ok) throw new Error(`Delete error (${res.status})`);
+}
+async function dbDeleteMany(table, ids) {
+  if (!ids.length) return;
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}?id=in.(${ids.join(',')})`, {
+    method: 'DELETE',
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` }
+  });
+  if (!res.ok) throw new Error(`Delete error (${res.status})`);
+}
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let flippers  = [];
+let presales  = [];
+let settings  = { botToken: '', messageTemplate: '🎟️ **{sale}** presale code(s) for you:\n{codes}' };
+let currentTab = 'flippers';
+let presaleView = null;
+let presaleInnerTab = 'setup';
+
+async function saveFlippers() {
+  if (!flippers.length) return;
+  try { await dbUpsert('pd_flippers', flippers); }
+  catch(e) { toast('Save error: '+e.message, 'error'); }
+}
+async function savePresales() {
+  if (!presales.length) return;
+  try { await dbUpsert('pd_presales', presales); }
+  catch(e) { toast('Save error: '+e.message, 'error'); }
+}
+async function saveSettings() {
+  localStorage.setItem('pd_bot_token', settings.botToken);
+  try { await dbUpsert('pd_settings', [{ id: 'global', messageTemplate: settings.messageTemplate }]); }
+  catch(e) { toast('Settings error: '+e.message, 'error'); }
+}
+
+function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
+
+// ─────────────────────────────────────────────
+//  INIT / REFRESH
+// ─────────────────────────────────────────────
+async function init() {
+  document.getElementById('loader').style.display = 'flex';
+  try {
+    const [fl, ps, st] = await Promise.all([
+      dbGet('pd_flippers', '?order=createdAt.asc'),
+      dbGet('pd_presales', '?order=createdAt.desc'),
+      dbGet('pd_settings', '?id=eq.global')
+    ]);
+    flippers = fl || [];
+    presales = ps || [];
+    const remote = st?.[0] || {};
+    settings = {
+      botToken: localStorage.getItem('pd_bot_token') || '',
+      messageTemplate: remote.messageTemplate || '🎟️ **{sale}** presale code(s) for you:\n{codes}'
+    };
+  } catch(e) {
+    toast('Failed to connect to database. Check your Supabase setup.', 'error');
+  }
+  document.getElementById('loader').style.display = 'none';
+  render();
+}
+
+async function refreshData() {
+  document.getElementById('loader').style.display = 'flex';
+  try {
+    const [fl, ps] = await Promise.all([
+      dbGet('pd_flippers', '?order=createdAt.asc'),
+      dbGet('pd_presales', '?order=createdAt.desc')
+    ]);
+    flippers = fl || [];
+    presales = ps || [];
+    toast('Data refreshed', 'success');
+  } catch(e) {
+    toast('Refresh failed: '+e.message, 'error');
+  }
+  document.getElementById('loader').style.display = 'none';
+  render();
+}
+
+// ─────────────────────────────────────────────
+//  ROUTING
+// ─────────────────────────────────────────────
+function goTab(tab) {
+  currentTab = tab;
+  presaleView = null;
+  document.querySelectorAll('.nav-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['flippers','presales','settings'][i] === tab);
+  });
+  render();
+}
+
+function viewPresale(id) {
+  presaleView = id;
+  presaleInnerTab = 'setup';
+  render();
+}
+
+function render() {
+  const el = document.getElementById('main-content');
+  if (currentTab === 'flippers') el.innerHTML = renderFlippers();
+  else if (currentTab === 'presales') {
+    if (presaleView) el.innerHTML = renderPresaleDetail(presaleView);
+    else el.innerHTML = renderPresales();
+  }
+  else if (currentTab === 'settings') el.innerHTML = renderSettings();
+  bindEvents();
+}
+
+// ─────────────────────────────────────────────
+//  TRUST HELPER
+// ─────────────────────────────────────────────
+function trustBadge(score) {
+  const cls = score <= 3 ? `t${score}` : score <= 6 ? `t${score}` : `t${score}`;
+  return `<span class="trust t${score}">${score}</span>`;
+}
+function trustColor(score) {
+  if (score <= 3) return '#ed4245';
+  if (score <= 6) return '#faa61a';
+  if (score <= 8) return '#3ba55c';
+  return '#5865f2';
+}
+
+// ─────────────────────────────────────────────
+//  FLIPPERS TAB
+// ─────────────────────────────────────────────
+function renderFlippers() {
+  const active = flippers.filter(f => f.active);
+  const rows = flippers.length === 0
+    ? `<tr><td colspan="8"><div class="empty"><div class="empty-icon">👥</div><div class="empty-title">No flippers yet</div><div class="empty-sub">Add your first flipper to get started.</div></div></td></tr>`
+    : flippers.map(f => `
+      <tr>
+        <td style="font-weight:700;font-size:14px">${esc(f.name||'—')}</td>
+        <td>
+          <div style="font-weight:600;font-size:13px">${esc(f.username||'—')}</div>
+          <div style="font-size:11px;color:var(--text2);font-family:monospace;margin-top:2px">${esc(f.userId||'')}</div>
+        </td>
+        <td><span class="badge ${f.active?'b-active':'b-inactive'}">${f.active?'Active':'Inactive'}</span></td>
+        <td style="font-size:13px">${f.email ? '<a href="mailto:'+esc(f.email)+'" style="color:var(--accent);text-decoration:none">'+esc(f.email)+'</a>' : '<span style="color:var(--text2)">—</span>'}</td>
+        <td style="font-size:13px">${f.phone ? '<a href="tel:'+esc(f.phone)+'" style="color:var(--text2);text-decoration:none">'+esc(f.phone)+'</a>' : '<span style="color:var(--text2)">—</span>'}</td>
+        <td style="color:var(--text2);font-size:13px">${esc(f.notes||'—')}</td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="openEditFlipper('${f.id}')">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteFlipper('${f.id}')">✕</button>
+          </div>
+        </td>
+      </tr>`).join('');
+
+  return `
+    <div class="page-header">
+      <div>
+        <div class="page-title">Flippers</div>
+        <div class="page-sub">${flippers.length} total · ${active.length} active</div>
+      </div>
+      <div class="toolbar">
+        <input class="search" placeholder="🔍 Search flippers…" oninput="filterFlippers(this.value)" id="flip-search">
+        <button class="btn btn-secondary" onclick="openImportCSV()">⬆ Import CSV</button>
+        <button class="btn btn-ghost btn-sm" onclick="downloadFlipperTemplate()" title="Download CSV template">Template ↓</button>
+        <button class="btn btn-primary" onclick="openAddFlipper()">＋ Add Flipper</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Name</th>
+            <th>Discord</th>
+            <th>Status</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr></thead>
+          <tbody id="flipper-tbody">${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function filterFlippers(q) {
+  const rows = document.querySelectorAll('#flipper-tbody tr');
+  rows.forEach(tr => {
+    const text = tr.innerText.toLowerCase();
+    tr.style.display = text.includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+
+// ─────────────────────────────────────────────
+//  PRESALES TAB
+// ─────────────────────────────────────────────
+function renderPresales() {
+  const cards = presales.length === 0
+    ? `<div class="empty"><div class="empty-icon">🎫</div><div class="empty-title">No presales yet</div><div class="empty-sub">Create a presale to start distributing codes.</div><button class="btn btn-primary" onclick="openNewPresale()">＋ New Presale</button></div>`
+    : `<div class="presale-grid">${presales.map(p => {
+        const assigned = (p.assignments||[]).length;
+        const sent = (p.assignments||[]).filter(a=>a.sent).length;
+        const statusClass = { setup:'b-setup', distributed:'b-distributed', complete:'b-complete' }[p.status];
+        return `<div class="presale-card" onclick="viewPresale('${p.id}')">
+          <div class="pc-header">
+            <div>
+              <div class="pc-name">${esc(p.name)}</div>
+              <div class="pc-date">${p.date ? formatDate(p.date) : 'No date set'}${p.brokerName ? ' · '+esc(p.brokerName) : ''}</div>
+            </div>
+            <span class="badge ${statusClass}">${p.status}</span>
+          </div>
+          <div class="pc-stats">
+            <div><div class="pc-stat-val">${(p.codes||[]).length}</div><div class="pc-stat-label">Codes</div></div>
+            <div><div class="pc-stat-val">${(p.availableFlipperIds||[]).length}</div><div class="pc-stat-label">Flippers</div></div>
+            <div><div class="pc-stat-val">${sent}</div><div class="pc-stat-label">Sent</div></div>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+
+  return `
+    <div class="page-header">
+      <div>
+        <div class="page-title">Presales</div>
+        <div class="page-sub">${presales.length} total</div>
+      </div>
+      <button class="btn btn-primary" onclick="openNewPresale()">＋ New Presale</button>
+    </div>
+    ${cards}`;
+}
+
+// ─────────────────────────────────────────────
+//  PRESALE DETAIL
+// ─────────────────────────────────────────────
+function renderPresaleDetail(id) {
+  const p = presales.find(x => x.id === id);
+  if (!p) return '<div class="empty"><div class="empty-title">Presale not found</div></div>';
+
+  const statusClass = { setup:'b-setup', distributed:'b-distributed', complete:'b-complete' }[p.status];
+
+  let innerContent = '';
+  if (presaleInnerTab === 'setup') innerContent = renderSetupTab(p);
+  else if (presaleInnerTab === 'distribute') innerContent = renderDistributeTab(p);
+  else if (presaleInnerTab === 'send') innerContent = renderSendTab(p);
+
+  return `
+    <button class="back-btn" onclick="goTab('presales')">← Back to Presales</button>
+    <div class="page-header">
+      <div>
+        <div class="page-title">${esc(p.name)}</div>
+        <div class="page-sub" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          ${p.date ? formatDate(p.date) : 'No date set'}
+          <span class="badge ${statusClass}">${p.status}</span>
+          ${p.brokerName ? `<span style="color:var(--text2)">Broker: <strong style="color:var(--text)">${esc(p.brokerName)}</strong></span>` : ''}
+          ${p.brokerCharge ? `<span style="color:var(--text2)">Charge: <strong style="color:var(--green)">$${parseFloat(p.brokerCharge).toFixed(2)}</strong></span>` : ''}
+        </div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deletePresale('${p.id}')">Delete Presale</button>
+    </div>
+    <div class="inner-tabs">
+      <button class="inner-tab ${presaleInnerTab==='setup'?'active':''}" onclick="switchInner('setup')">① Setup</button>
+      <button class="inner-tab ${presaleInnerTab==='distribute'?'active':''}" onclick="switchInner('distribute')">② Distribute Codes</button>
+      <button class="inner-tab ${presaleInnerTab==='send'?'active':''}" onclick="switchInner('send')">③ Send to Flippers</button>
+    </div>
+    ${innerContent}`;
+}
+
+function switchInner(tab) {
+  presaleInnerTab = tab;
+  render();
+}
+
+// SETUP TAB
+function renderSetupTab(p) {
+  const available = new Set(p.availableFlipperIds || []);
+  const activeFlippers = flippers.filter(f => f.active);
+
+  const flipperList = activeFlippers.length === 0
+    ? '<div style="color:var(--text2);font-size:14px;padding:16px">No active flippers. Add some on the Flippers tab first.</div>'
+    : activeFlippers.map(f => `
+      <div class="flipper-item ${available.has(f.id)?'selected':''}" onclick="toggleFlipper('${p.id}','${f.id}',this)">
+        <input type="checkbox" ${available.has(f.id)?'checked':''} onclick="event.stopPropagation();toggleFlipper('${p.id}','${f.id}',this.closest('.flipper-item'))">
+        <span class="fi-name">${esc(f.name||f.username)}</span>
+        <span class="fi-meta">${f.username ? '@'+f.username : ''}</span>
+      </div>`).join('');
+
+  return `
+    <div class="row2">
+      <div>
+        <div class="fg">
+          <label class="label">Sale Name</label>
+          <input class="input" id="p-name" value="${esc(p.name)}" oninput="updatePresaleName('${p.id}',this.value)">
+        </div>
+        <div class="fg">
+          <label class="label">Sale Date</label>
+          <input class="input" type="date" id="p-date" value="${p.date||''}" oninput="updatePresaleDate('${p.id}',this.value)">
+        </div>
+        <div class="row2">
+          <div class="fg">
+            <label class="label">Broker Name</label>
+            <input class="input" id="p-broker" value="${esc(p.brokerName||'')}" placeholder="Broker name" oninput="updatePresaleField('${p.id}','brokerName',this.value)">
+          </div>
+          <div class="fg">
+            <label class="label">Broker Charge</label>
+            <input class="input" type="number" min="0" step="0.01" id="p-charge" value="${esc(p.brokerCharge||'')}" placeholder="0.00" oninput="updatePresaleField('${p.id}','brokerCharge',this.value)">
+          </div>
+        </div>
+        <div class="fg">
+          <label class="label">Notes</label>
+          <textarea class="input" rows="3" oninput="updatePresaleNotes('${p.id}',this.value)">${esc(p.notes||'')}</textarea>
+        </div>
+      </div>
+      <div>
+        <label class="label">Available Flippers (${available.size} selected)</label>
+        <div class="flipper-list" id="flipper-list-${p.id}">${flipperList}</div>
+      </div>
+    </div>
+    <div style="margin-top:4px">
+      <button class="btn btn-primary" onclick="switchInner('distribute')">Next: Upload Codes →</button>
+    </div>`;
+}
+
+// DISTRIBUTE TAB
+function renderDistributeTab(p) {
+  const selectedFlippers = flippers.filter(f => (p.availableFlipperIds||[]).includes(f.id));
+  if (selectedFlippers.length === 0) {
+    return `<div class="infobox">⚠️ No flippers selected for this presale. Go back to <strong>Setup</strong> and select some flippers.</div>`;
+  }
+
+  const codes = p.codes || [];
+  const totalCodes = codes.length;
+  const hasAssignments = (p.assignments||[]).length > 0;
+  const alloc = p.draftAlloc || computeDefaultAlloc(selectedFlippers, totalCodes);
+
+  const allocTotal = Object.values(alloc).reduce((s,v)=>s+(parseInt(v)||0), 0);
+  const overAllocated = allocTotal > totalCodes;
+  const pct = totalCodes > 0 ? Math.min(100, (allocTotal / totalCodes) * 100) : 0;
+
+  const tableRows = selectedFlippers.map(f => {
+    const val = alloc[f.id] !== undefined ? alloc[f.id] : 0;
+    return `<tr>
+      <td style="font-weight:700">${esc(f.name||f.username||'—')}</td>
+      <td style="font-size:12px;color:var(--text2)">${f.username ? '@'+esc(f.username) : ''}</td>
+      <td><input class="alloc-num" type="number" min="0" value="${val}" onchange="updateAlloc('${p.id}','${f.id}',this.value)" oninput="updateAlloc('${p.id}','${f.id}',this.value)"></td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div class="row2" style="align-items:start">
+      <div>
+        <div class="fg">
+          <label class="label">Paste Codes (one per line)</label>
+          <textarea class="codes-textarea" placeholder="ABCD-1234-WXYZ&#10;EFGH-5678-QRST&#10;…" onchange="updateCodes('${p.id}',this.value)">${codes.join('\n')}</textarea>
+          <div class="hint">${totalCodes} code${totalCodes!==1?'s':''} loaded</div>
+        </div>
+        ${hasAssignments ? `<div class="warnbox">⚠️ Codes are already distributed. Re-distributing will <strong>overwrite</strong> all current assignments and reset send status.</div>` : ''}
+      </div>
+      <div>
+        <label class="label">Code Allocation</label>
+        <div class="infobox">Codes split evenly across <strong>${selectedFlippers.length} flipper${selectedFlippers.length!==1?'s':''}</strong>. Adjust any number manually before distributing.</div>
+        <div class="codes-counter ${overAllocated?'over':''}">
+          Allocated: <strong>${allocTotal}</strong> / ${totalCodes} codes
+          ${overAllocated ? ' ⚠️ Over-allocated!' : ''}
+        </div>
+        <div class="progress-bg"><div class="progress-fill ${overAllocated?'over':''}" style="width:${pct}%"></div></div>
+        <div class="table-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          <table>
+            <thead><tr><th>Flipper</th><th></th><th>Codes</th></tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="distributeNow('${p.id}')" ${overAllocated||totalCodes===0?'disabled':''}>
+            ✓ Distribute Codes
+          </button>
+          <button class="btn btn-secondary" onclick="resetAlloc('${p.id}')">Redistribute Evenly</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// SEND TAB
+function renderSendTab(p) {
+  const assignments = p.assignments || [];
+  if (assignments.length === 0) {
+    return `<div class="infobox">No codes distributed yet. Go to <strong>Distribute Codes</strong> to assign codes to flippers.</div>`;
+  }
+
+  const hasBotToken = !!settings.botToken;
+  const sentCount = assignments.filter(a=>a.sent).length;
+
+  const rows = assignments.map(a => {
+    const f = flippers.find(x=>x.id===a.flipperId) || { username: 'Unknown', userId: '' };
+    const statusBadge = a.sent
+      ? '<span class="badge b-sent">✓ Sent</span>'
+      : a.failed
+        ? '<span class="badge b-failed">✗ Failed</span>'
+        : '<span class="badge b-pending">Pending</span>';
+    const codes = a.codes || [];
+    const canSend = hasBotToken && !!f.userId;
+    const sendDisabled = canSend ? '' : 'disabled title="Need bot token &amp; User ID"';
+    const sendBtn = !a.sent
+      ? `<button class="btn btn-success btn-sm" id="sendbtn-${a.flipperId}" onclick="sendOne('${p.id}','${a.flipperId}')" ${sendDisabled}>📨 Send DM</button>`
+      : `<button class="btn btn-secondary btn-sm" onclick="resendOne('${p.id}','${a.flipperId}')">↺ Resend</button>`;
+    return `<tr id="row-${a.flipperId}">
+      <td style="font-weight:700">${esc(f.username)}</td>
+      <td><span style="font-family:monospace;font-size:12px;color:var(--text2)">${esc(f.userId||'No User ID')}</span></td>
+      <td>${codes.map(c=>'<span class="code-pill">'+esc(c)+'</span>').join(' ')}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${sendBtn}
+          <button class="btn btn-ghost btn-sm" onclick="copyAssignment('${p.id}','${a.flipperId}')">📋 Copy</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div>
+        <span style="font-size:14px;color:var(--text2)">${sentCount} / ${assignments.length} sent via Discord</span>
+      </div>
+      <div style="display:flex;gap:10px">
+        ${!hasBotToken ? `<span style="font-size:13px;color:var(--yellow)">⚠️ No bot token — set one in Settings to send DMs</span>` : ''}
+        <button class="btn btn-success" onclick="sendAll('${p.id}')" ${!hasBotToken?'disabled':''}>
+          📨 Send All Pending
+        </button>
+        <button class="btn btn-secondary" onclick="exportCSV('${p.id}')">⬇ Export CSV</button>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>Flipper</th>
+          <th>Discord User ID</th>
+          <th>Codes</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────
+//  SETTINGS TAB
+// ─────────────────────────────────────────────
+function renderSettings() {
+  return `
+    <div class="page-header">
+      <div class="page-title">Settings</div>
+    </div>
+    <div class="settings-wrap">
+      <div class="settings-section card" style="padding:22px">
+        <div class="settings-title">Discord Bot Token</div>
+        <div class="settings-sub">Required for sending codes via Discord DM. Stored on <strong>this device only</strong> — each team member enters their own token. Not synced to the shared database.</div>
+        <div class="fg">
+          <label class="label">Bot Token</label>
+          <input class="input" type="password" id="bot-token-input" value="${esc(settings.botToken||'')}" placeholder="Bot token here…">
+          <div class="hint">Get this from the <a href="https://discord.com/developers/applications" target="_blank" style="color:var(--accent)">Discord Developer Portal</a> → Your Bot → Token. Enable DM access in Bot settings.</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="saveBotToken()">Save Token</button>
+          <button class="btn btn-secondary" onclick="testBotToken()">Test Connection</button>
+          ${settings.botToken ? `<button class="btn btn-danger" onclick="clearBotToken()">Clear Token</button>` : ''}
+        </div>
+      </div>
+
+      <div class="settings-section card" style="padding:22px;margin-top:16px">
+        <div class="settings-title">Message Template</div>
+        <div class="settings-sub">Template used when sending codes via Discord DM. Use <code style="background:var(--bg3);padding:1px 5px;border-radius:3px;font-size:12px">{sale}</code> for the sale name and <code style="background:var(--bg3);padding:1px 5px;border-radius:3px;font-size:12px">{codes}</code> for the codes.</div>
+        <div class="fg">
+          <label class="label">DM Template</label>
+          <textarea class="input" id="msg-template" rows="5">${esc(settings.messageTemplate||'')}</textarea>
+        </div>
+        <button class="btn btn-primary" onclick="saveTemplate()">Save Template</button>
+      </div>
+
+      <div class="settings-section card" style="padding:22px;margin-top:16px">
+        <div class="settings-title">Data</div>
+        <div class="settings-sub">Export a backup of all data, or import from a backup file. All changes sync automatically to the shared database.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="exportData()">⬇ Export All Data</button>
+          <button class="btn btn-secondary" onclick="openImportData()">⬆ Import Backup</button>
+          <button class="btn btn-danger" onclick="clearAllData()">🗑 Clear All Data</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────
+//  MODAL HELPERS
+// ─────────────────────────────────────────────
+function openModal(html) {
+  const el = document.getElementById('modals');
+  el.innerHTML = `<div class="overlay" onclick="closeModal(event)">${html}</div>`;
+}
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('modals').innerHTML = '';
+}
+function closeModalForce() {
+  document.getElementById('modals').innerHTML = '';
+}
+
+// ─────────────────────────────────────────────
+//  FLIPPER MODALS
+// ─────────────────────────────────────────────
+function openAddFlipper() {
+  openModal(`<div class="modal">
+    <div class="modal-title">Add Flipper</div>
+    <div class="row2">
+      <div class="fg">
+        <label class="label">Name</label>
+        <input class="input" id="f-name" placeholder="e.g. John Smith">
+      </div>
+      <div class="fg">
+        <label class="label">Discord Name</label>
+        <input class="input" id="f-username" placeholder="e.g. @username">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="label">Discord User ID</label>
+      <input class="input" id="f-userid" placeholder="e.g. 123456789012345678">
+      <div class="hint">Enable Developer Mode in Discord → right-click user → Copy User ID. Required for sending DMs.</div>
+    </div>
+    <div class="row2">
+      <div class="fg">
+        <label class="label">Email (optional)</label>
+        <input class="input" id="f-email" type="email" placeholder="flipper@example.com">
+      </div>
+      <div class="fg">
+        <label class="label">Phone (optional)</label>
+        <input class="input" id="f-phone" type="tel" placeholder="+1 555 000 0000">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="label">Notes (optional)</label>
+      <input class="input" id="f-notes" placeholder="e.g. reliable, fast payment…">
+    </div>
+    <div class="fg">
+      <label class="label">Status</label>
+      <select class="input" id="f-active">
+        <option value="1">Active</option>
+        <option value="0">Inactive</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModalForce()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFlipper()">Add Flipper</button>
+    </div>
+  </div>`);
+}
+
+function openEditFlipper(id) {
+  const f = flippers.find(x=>x.id===id);
+  if (!f) return;
+  openModal(`<div class="modal">
+    <div class="modal-title">Edit Flipper</div>
+    <input type="hidden" id="f-id" value="${f.id}">
+    <div class="row2">
+      <div class="fg">
+        <label class="label">Name</label>
+        <input class="input" id="f-name" value="${esc(f.name||'')}" placeholder="e.g. John Smith">
+      </div>
+      <div class="fg">
+        <label class="label">Discord Name</label>
+        <input class="input" id="f-username" value="${esc(f.username||'')}">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="label">Discord User ID</label>
+      <input class="input" id="f-userid" value="${esc(f.userId||'')}" placeholder="123456789012345678">
+      <div class="hint">Required for sending DMs via bot.</div>
+    </div>
+    <div class="row2">
+      <div class="fg">
+        <label class="label">Email (optional)</label>
+        <input class="input" id="f-email" type="email" value="${esc(f.email||'')}" placeholder="flipper@example.com">
+      </div>
+      <div class="fg">
+        <label class="label">Phone (optional)</label>
+        <input class="input" id="f-phone" type="tel" value="${esc(f.phone||'')}" placeholder="+1 555 000 0000">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="label">Notes (optional)</label>
+      <input class="input" id="f-notes" value="${esc(f.notes||'')}">
+    </div>
+    <div class="fg">
+      <label class="label">Status</label>
+      <select class="input" id="f-active">
+        <option value="1" ${f.active?'selected':''}>Active</option>
+        <option value="0" ${!f.active?'selected':''}>Inactive</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModalForce()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFlipper()">Save Changes</button>
+    </div>
+  </div>`);
+}
+
+async function saveFlipper() {
+  const id = document.getElementById('f-id')?.value;
+  const name     = document.getElementById('f-name').value.trim();
+  const username = document.getElementById('f-username').value.trim();
+  if (!name && !username) { toast('Please enter a name or Discord name', 'error'); return; }
+  const data = {
+    name,
+    username,
+    userId:  document.getElementById('f-userid').value.trim(),
+    email:   document.getElementById('f-email').value.trim(),
+    phone:   document.getElementById('f-phone').value.trim(),
+    notes:   document.getElementById('f-notes').value.trim(),
+    active:  document.getElementById('f-active').value === '1',
+  };
+  if (id) {
+    const idx = flippers.findIndex(f=>f.id===id);
+    flippers[idx] = { ...flippers[idx], ...data };
+  } else {
+    flippers.push({ id: uid(), createdAt: Date.now(), ...data });
+  }
+  closeModalForce();
+  render();
+  await saveFlippers();
+  toast(id ? 'Flipper updated' : 'Flipper added', 'success');
+}
+
+async function deleteFlipper(id) {
+  const f = flippers.find(x=>x.id===id);
+  if (!confirm(`Delete ${f?.name||f?.username}? This cannot be undone.`)) return;
+  flippers = flippers.filter(x=>x.id!==id);
+  render();
+  try { await dbDelete('pd_flippers', id); toast('Flipper deleted', 'info'); }
+  catch(e) { toast('Delete failed: '+e.message, 'error'); }
+}
+
+// ─────────────────────────────────────────────
+//  PRESALE MODALS & ACTIONS
+// ─────────────────────────────────────────────
+function openNewPresale() {
+  openModal(`<div class="modal">
+    <div class="modal-title">New Presale</div>
+    <div class="fg">
+      <label class="label">Sale Name</label>
+      <input class="input" id="ps-name" placeholder="e.g. PV5 SPLBL">
+    </div>
+    <div class="fg">
+      <label class="label">Sale Date</label>
+      <input class="input" type="date" id="ps-date">
+    </div>
+    <div class="row2">
+      <div class="fg">
+        <label class="label">Broker Name</label>
+        <input class="input" id="ps-broker" placeholder="e.g. John's Tickets">
+      </div>
+      <div class="fg">
+        <label class="label">Broker Charge</label>
+        <input class="input" id="ps-charge" type="number" min="0" step="0.01" placeholder="0.00">
+        <div class="hint">Amount you're charging the broker. Not sent to flippers.</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModalForce()">Cancel</button>
+      <button class="btn btn-primary" onclick="createPresale()">Create Presale</button>
+    </div>
+  </div>`);
+}
+
+async function createPresale() {
+  const name = document.getElementById('ps-name').value.trim();
+  if (!name) { toast('Please enter a sale name', 'error'); return; }
+  const p = { id: uid(), name, date: document.getElementById('ps-date').value, brokerName: document.getElementById('ps-broker').value.trim(), brokerCharge: document.getElementById('ps-charge').value.trim(), status: 'setup', availableFlipperIds: [], codes: [], assignments: [], notes: '', draftAlloc: null, createdAt: Date.now() };
+  presales.unshift(p);
+  closeModalForce();
+  viewPresale(p.id);
+  await savePresales();
+}
+
+async function deletePresale(id) {
+  const p = presales.find(x=>x.id===id);
+  if (!confirm(`Delete "${p?.name}"? All assignments will be lost.`)) return;
+  presales = presales.filter(x=>x.id!==id);
+  try { await dbDelete('pd_presales', id); }
+  catch(e) { toast('Delete failed: '+e.message, 'error'); return; }
+  toast('Presale deleted', 'info');
+  goTab('presales');
+}
+
+// SETUP ACTIONS
+function toggleFlipper(presaleId, flipperId, el) {
+  const p = presales.find(x=>x.id===presaleId);
+  if (!p) return;
+  p.availableFlipperIds = p.availableFlipperIds || [];
+  const idx = p.availableFlipperIds.indexOf(flipperId);
+  if (idx > -1) p.availableFlipperIds.splice(idx, 1);
+  else p.availableFlipperIds.push(flipperId);
+  p.draftAlloc = null;
+  savePresales();
+  // Update UI without full re-render
+  el.classList.toggle('selected', p.availableFlipperIds.includes(flipperId));
+  const cb = el.querySelector('input[type=checkbox]');
+  if (cb) cb.checked = p.availableFlipperIds.includes(flipperId);
+}
+
+function updatePresaleName(id, val) {
+  const p = presales.find(x=>x.id===id);
+  if (p) { p.name = val; savePresales(); }
+}
+function updatePresaleDate(id, val) {
+  const p = presales.find(x=>x.id===id);
+  if (p) { p.date = val; savePresales(); }
+}
+function updatePresaleNotes(id, val) {
+  const p = presales.find(x=>x.id===id);
+  if (p) { p.notes = val; savePresales(); }
+}
+function updatePresaleField(id, field, val) {
+  const p = presales.find(x=>x.id===id);
+  if (p) { p[field] = val; savePresales(); }
+}
+
+// DISTRIBUTE ACTIONS
+function updateCodes(id, val) {
+  const p = presales.find(x=>x.id===id);
+  if (!p) return;
+  const codes = val.split('\n').map(c=>c.trim()).filter(Boolean);
+  p.codes = [...new Set(codes)];
+  p.draftAlloc = null;
+  savePresales();
+  // Re-render distribute tab
+  const main = document.getElementById('main-content');
+  const inner = main.querySelector('.inner-tab.active');
+  if (presaleInnerTab === 'distribute') {
+    render();
+  }
+}
+
+function computeDefaultAlloc(selectedFlippers, totalCodes) {
+  const alloc = {};
+  const n = selectedFlippers.length;
+  if (n === 0) return alloc;
+  const base = Math.floor(totalCodes / n);
+  const extra = totalCodes % n; // first `extra` flippers get one more
+  selectedFlippers.forEach((f, i) => {
+    alloc[f.id] = base + (i < extra ? 1 : 0);
+  });
+  return alloc;
+}
+
+function updateAlloc(presaleId, flipperId, val) {
+  const p = presales.find(x=>x.id===presaleId);
+  if (!p) return;
+  p.draftAlloc = p.draftAlloc || {};
+  const selectedFlippers = flippers.filter(f => (p.availableFlipperIds||[]).includes(f.id));
+  if (!p.draftAlloc || Object.keys(p.draftAlloc).length === 0) {
+    p.draftAlloc = computeDefaultAlloc(selectedFlippers, (p.codes||[]).length);
+  }
+  p.draftAlloc[flipperId] = Math.max(0, parseInt(val)||0);
+  savePresales();
+  // Update counter
+  const alloc = p.draftAlloc;
+  const allocTotal = Object.values(alloc).reduce((s,v)=>s+(parseInt(v)||0), 0);
+  const totalCodes = (p.codes||[]).length;
+  const over = allocTotal > totalCodes;
+  const counter = document.querySelector('.codes-counter');
+  if (counter) {
+    counter.className = `codes-counter${over?' over':''}`;
+    counter.innerHTML = `Allocated: <strong>${allocTotal}</strong> / ${totalCodes} codes${over?' ⚠️ Over-allocated!':''}`;
+  }
+  const fill = document.querySelector('.progress-fill');
+  if (fill) {
+    const pct = totalCodes > 0 ? Math.min(120, (allocTotal/totalCodes)*100) : 0;
+    fill.style.width = pct+'%';
+    fill.className = `progress-fill${over?' over':''}`;
+  }
+  const distBtn = document.querySelector('.btn-primary[onclick*="distributeNow"]');
+  if (distBtn) distBtn.disabled = over || totalCodes === 0;
+}
+
+function resetAlloc(presaleId) {
+  const p = presales.find(x=>x.id===presaleId);
+  if (!p) return;
+  p.draftAlloc = null;
+  savePresales();
+  render();
+}
+
+async function distributeNow(presaleId) {
+  const p = presales.find(x=>x.id===presaleId);
+  if (!p) return;
+  const selectedFlippers = flippers.filter(f => (p.availableFlipperIds||[]).includes(f.id));
+  const alloc = p.draftAlloc || computeDefaultAlloc(selectedFlippers, (p.codes||[]).length);
+  const codes = [...(p.codes||[])];
+  let codeIdx = 0;
+  const assignments = [];
+  for (const f of selectedFlippers) {
+    const count = parseInt(alloc[f.id]) || 0;
+    const myC = codes.slice(codeIdx, codeIdx+count);
+    codeIdx += count;
+    if (myC.length > 0) assignments.push({ flipperId: f.id, codes: myC, sent: false, failed: false, sentAt: null });
+  }
+  p.assignments = assignments;
+  p.status = 'distributed';
+  p.draftAlloc = null;
+  await savePresales();
+  toast(`${assignments.length} flippers assigned codes!`, 'success');
+  presaleInnerTab = 'send';
+  render();
+}
+
+// SEND ACTIONS
+async function sendOne(presaleId, flipperId) {
+  const p = presales.find(x=>x.id===presaleId);
+  const a = (p?.assignments||[]).find(x=>x.flipperId===flipperId);
+  const f = flippers.find(x=>x.id===flipperId);
+  if (!p || !a || !f) return;
+  if (!f.userId) { toast('No User ID for '+f.username, 'error'); return; }
+  if (!settings.botToken) { toast('No bot token set', 'error'); return; }
+
+  const btn = document.getElementById(`sendbtn-${flipperId}`);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Sending…'; }
+
+  const result = await sendDiscordDM(settings.botToken, f.userId, buildMessage(p.name, a.codes));
+  a.sent = result.ok;
+  a.failed = !result.ok;
+  a.sentAt = result.ok ? Date.now() : null;
+  a.error = result.error || null;
+  if ((p.assignments||[]).every(x=>x.sent)) p.status = 'complete';
+  savePresales();
+
+  if (result.ok) toast(`✓ Sent to ${f.username}`, 'success');
+  else toast(`Failed to DM ${f.username}: ${result.error||'Unknown error'}`, 'error');
+  render();
+}
+
+async function resendOne(presaleId, flipperId) {
+  const p = presales.find(x=>x.id===presaleId);
+  const a = (p?.assignments||[]).find(x=>x.flipperId===flipperId);
+  if (!a) return;
+  a.sent = false;
+  a.failed = false;
+  savePresales();
+  render();
+  await sendOne(presaleId, flipperId);
+}
+
+async function sendAll(presaleId) {
+  const p = presales.find(x=>x.id===presaleId);
+  if (!p) return;
+  const pending = (p.assignments||[]).filter(a=>!a.sent);
+  if (pending.length === 0) { toast('All already sent!', 'info'); return; }
+  toast(`Sending to ${pending.length} flippers…`, 'info');
+  for (const a of pending) {
+    await sendOne(presaleId, a.flipperId);
+    await sleep(400); // Respect Discord rate limits
+  }
+}
+
+function copyAssignment(presaleId, flipperId) {
+  const p = presales.find(x=>x.id===presaleId);
+  const a = (p?.assignments||[]).find(x=>x.flipperId===flipperId);
+  const f = flippers.find(x=>x.id===flipperId);
+  if (!a) return;
+  const text = buildMessage(p.name, a.codes);
+  navigator.clipboard.writeText(text).then(()=>toast('Copied to clipboard!', 'success'));
+}
+
+function exportCSV(presaleId) {
+  const p = presales.find(x=>x.id===presaleId);
+  if (!p) return;
+  const rows = [['Flipper','Discord User ID','Codes','Status']];
+  for (const a of (p.assignments||[])) {
+    const f = flippers.find(x=>x.id===a.flipperId)||{username:'?',userId:''};
+    rows.push([f.username, f.userId, a.codes.join(';'), a.sent?'Sent':a.failed?'Failed':'Pending']);
+  }
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${p.name.replace(/\s+/g,'-')}-codes.csv`;
+  a.click();
+  toast('CSV downloaded', 'success');
+}
+
+// ─────────────────────────────────────────────
+//  SETTINGS ACTIONS
+// ─────────────────────────────────────────────
+function saveBotToken() {
+  settings.botToken = document.getElementById('bot-token-input').value.trim();
+  localStorage.setItem('pd_bot_token', settings.botToken);
+  toast('Bot token saved on this device', 'success');
+  render();
+}
+function clearBotToken() {
+  if (!confirm('Clear the bot token from this device?')) return;
+  settings.botToken = '';
+  localStorage.removeItem('pd_bot_token');
+  render();
+}
+async function testBotToken() {
+  const token = document.getElementById('bot-token-input').value.trim();
+  if (!token) { toast('Enter a token first', 'error'); return; }
+  try {
+    const res = await fetch('https://discord.com/api/v10/users/@me', { headers: { Authorization: `Bot ${token}` } });
+    if (res.ok) {
+      const data = await res.json();
+      toast(`✓ Connected as @${data.username}`, 'success');
+    } else {
+      toast('Invalid token or bot not set up', 'error');
+    }
+  } catch(e) {
+    toast('Connection failed: '+e.message, 'error');
+  }
+}
+async function saveTemplate() {
+  settings.messageTemplate = document.getElementById('msg-template').value;
+  await saveSettings();
+  toast('Template saved for all team members', 'success');
+}
+function exportData() {
+  const data = { flippers, presales, settings: { messageTemplate: settings.messageTemplate } };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `presaledrop-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  toast('Backup exported', 'success');
+}
+
+function openImportData() {
+  openModal(`<div class="modal">
+    <div class="modal-title">Import Backup</div>
+    <div class="infobox">Select a <strong>presaledrop-backup-*.json</strong> file exported from another computer. Choose whether to merge with existing data or replace everything.</div>
+    <div class="fg">
+      <label class="label">Backup File</label>
+      <input type="file" accept=".json,application/json" id="import-file" class="input" style="padding:8px;cursor:pointer" onchange="previewImport(this)">
+    </div>
+    <div id="import-preview" class="hidden">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:13px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center">
+          <div><div style="font-size:22px;font-weight:800;color:var(--accent)" id="imp-flippers">—</div><div style="color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Flippers</div></div>
+          <div><div style="font-size:22px;font-weight:800;color:var(--accent)" id="imp-presales">—</div><div style="color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Presales</div></div>
+          <div><div style="font-size:22px;font-weight:800;color:var(--accent)" id="imp-template">—</div><div style="color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Template</div></div>
+        </div>
+      </div>
+      <div class="fg">
+        <label class="label">Import Mode</label>
+        <select class="input" id="import-mode">
+          <option value="merge">Merge — add to existing data (skips duplicates)</option>
+          <option value="replace">Replace — overwrite everything on this computer</option>
+        </select>
+      </div>
+    </div>
+    <div id="import-error" class="hidden" style="background:rgba(237,66,69,0.08);border:1px solid rgba(237,66,69,0.3);border-radius:7px;padding:12px 14px;font-size:13px;color:#ed4245"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModalForce()">Cancel</button>
+      <button class="btn btn-primary hidden" id="import-confirm-btn" onclick="confirmImportData()">Import</button>
+    </div>
+  </div>`);
+}
+
+let _importParsed = null;
+
+function previewImport(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (typeof data !== 'object' || (!data.flippers && !data.presales)) {
+        showImportError('This doesn\'t look like a PresaleDrop backup file.');
+        return;
+      }
+      _importParsed = data;
+      document.getElementById('imp-flippers').textContent = (data.flippers||[]).length;
+      document.getElementById('imp-presales').textContent = (data.presales||[]).length;
+      document.getElementById('imp-template').textContent = data.settings?.messageTemplate ? 'Yes' : 'No';
+      document.getElementById('import-preview').classList.remove('hidden');
+      document.getElementById('import-error').classList.add('hidden');
+      const btn = document.getElementById('import-confirm-btn');
+      btn.classList.remove('hidden');
+      btn.textContent = 'Import';
+    } catch(e) {
+      showImportError('Could not read file. Make sure it\'s a valid PresaleDrop backup (.json).');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function showImportError(msg) {
+  const el = document.getElementById('import-error');
+  if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+  document.getElementById('import-preview')?.classList.add('hidden');
+  document.getElementById('import-confirm-btn')?.classList.add('hidden');
+}
+
+async function confirmImportData() {
+  if (!_importParsed) return;
+  const mode = document.getElementById('import-mode').value;
+  const data = _importParsed;
+
+  if (mode === 'replace') {
+    try {
+      await Promise.all([
+        dbDeleteMany('pd_flippers', flippers.map(f=>f.id)),
+        dbDeleteMany('pd_presales', presales.map(p=>p.id))
+      ]);
+    } catch(e) { toast('Replace failed: '+e.message, 'error'); return; }
+    flippers = data.flippers || [];
+    presales = data.presales || [];
+    if (data.settings?.messageTemplate) {
+      settings.messageTemplate = data.settings.messageTemplate;
+      await saveSettings();
+    }
+  } else {
+    const existingFlipperIds = new Set(flippers.map(f=>f.id));
+    const existingPresaleIds = new Set(presales.map(p=>p.id));
+    let addedF = 0, addedP = 0;
+    for (const f of (data.flippers||[])) {
+      if (!existingFlipperIds.has(f.id)) { flippers.push(f); addedF++; }
+    }
+    for (const p of (data.presales||[])) {
+      if (!existingPresaleIds.has(p.id)) { presales.push(p); addedP++; }
+    }
+    closeModalForce();
+    await Promise.all([saveFlippers(), savePresales()]);
+    toast(`Merged: +${addedF} flipper${addedF!==1?'s':''}, +${addedP} presale${addedP!==1?'s':''}`, 'success');
+    render();
+    return;
+  }
+
+  await Promise.all([saveFlippers(), savePresales()]);
+  closeModalForce();
+  toast(`Import complete — ${flippers.length} flippers, ${presales.length} presales loaded`, 'success');
+  render();
+}
+
+async function clearAllData() {
+  if (!confirm('Clear ALL data? This deletes all flippers and presales for the ENTIRE TEAM. Cannot be undone.')) return;
+  try {
+    await Promise.all([
+      dbDeleteMany('pd_flippers', flippers.map(f=>f.id)),
+      dbDeleteMany('pd_presales', presales.map(p=>p.id))
+    ]);
+    flippers = []; presales = [];
+    toast('All data cleared', 'info');
+    render();
+  } catch(e) { toast('Clear failed: '+e.message, 'error'); }
+}
+
+// ─────────────────────────────────────────────
+//  CSV IMPORT
+// ─────────────────────────────────────────────
+function openImportCSV() {
+  openModal(`<div class="modal modal-lg">
+    <div class="modal-title">Import Flippers from CSV</div>
+    <div class="infobox">
+      <strong>Expected columns (header row required):</strong><br>
+      <code style="font-size:12px">name, discord_name, user_id, email, phone, notes, active</code><br><br>
+      At least <strong>name</strong> or <strong>discord_name</strong> is required. active defaults to true.<br>
+      Column order doesn't matter — headers are matched by name.
+    </div>
+    <div class="fg">
+      <label class="label">Select CSV File</label>
+      <input type="file" accept=".csv,text/csv" id="csv-file-input" class="input" style="padding:8px;cursor:pointer" onchange="previewCSV(this)">
+    </div>
+    <div id="csv-preview" class="hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <label class="label" style="margin:0">Preview (<span id="csv-count">0</span> rows)</label>
+        <div style="font-size:12px;color:var(--text2)" id="csv-dup-info"></div>
+      </div>
+      <div style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+        <table style="font-size:13px">
+          <thead><tr>
+            <th style="width:24px"><input type="checkbox" id="csv-check-all" checked onchange="toggleAllCSV(this.checked)" style="accent-color:var(--accent)"></th>
+            <th>Name</th><th>Discord Name</th><th>User ID</th><th>Email</th><th>Phone</th><th>Notes</th><th>Active</th><th>Status</th>
+          </tr></thead>
+          <tbody id="csv-preview-body"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:var(--text2)">
+        Uncheck any rows you want to skip. Duplicates (same username) are shown below.
+      </div>
+    </div>
+    <div id="csv-error" class="hidden" style="background:rgba(237,66,69,0.08);border:1px solid rgba(237,66,69,0.3);border-radius:7px;padding:12px 14px;font-size:13px;color:#ed4245;margin-top:12px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModalForce()">Cancel</button>
+      <button class="btn btn-primary hidden" id="csv-import-btn" onclick="confirmImportCSV()">Import Selected</button>
+    </div>
+  </div>`);
+}
+
+let _csvParsed = [];
+
+function previewCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const text = e.target.result;
+      const parsed = parseCSVFile(text);
+      if (parsed.error) { showCSVError(parsed.error); return; }
+      _csvParsed = parsed.rows;
+      renderCSVPreview(_csvParsed);
+    } catch(err) {
+      showCSVError('Failed to parse file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function parseCSVFile(text) {
+  const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim());
+  if (lines.length < 2) return { error: 'CSV must have a header row and at least one data row.' };
+
+  // Parse header
+  const headers = parseCSVRow(lines[0]).map(h => h.toLowerCase().trim().replace(/\s+/g,'_'));
+  const nameCol     = headers.findIndex(h => h==='name' || h==='full_name' || h==='real_name');
+  const usernameCol = headers.findIndex(h => h==='discord_name' || h==='username' || h==='discord_username' || h==='discord');
+  if (nameCol === -1 && usernameCol === -1) return { error: 'Could not find a "name" or "discord_name" column. Make sure your header row includes at least one of these.' };
+
+  const userIdCol  = headers.findIndex(h => h==='user_id' || h==='userid' || h==='discord_user_id' || h==='discord_id');
+  const emailCol   = headers.findIndex(h => h==='email' || h==='email_address');
+  const phoneCol   = headers.findIndex(h => h==='phone' || h==='phone_number' || h==='mobile');
+  const notesCol   = headers.findIndex(h => h==='notes' || h==='note');
+  const activeCol  = headers.findIndex(h => h==='active' || h==='status' || h==='enabled');
+
+  const existingNames = new Set(flippers.map(f=>(f.name||f.username||'').toLowerCase()));
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const cells = parseCSVRow(lines[i]);
+    const name     = nameCol     > -1 ? (cells[nameCol]||'').trim()     : '';
+    const username = usernameCol > -1 ? (cells[usernameCol]||'').trim() : '';
+    if (!name && !username) continue;
+    const activeRaw = activeCol > -1 ? (cells[activeCol]||'true').trim().toLowerCase() : 'true';
+    const active = !['false','0','no','inactive'].includes(activeRaw);
+    const key = (name||username).toLowerCase();
+    const isDuplicate = existingNames.has(key);
+    rows.push({
+      name,
+      username,
+      userId:     userIdCol > -1 ? (cells[userIdCol]||'').trim() : '',
+      email:      emailCol  > -1 ? (cells[emailCol]||'').trim()  : '',
+      phone:      phoneCol  > -1 ? (cells[phoneCol]||'').trim()  : '',
+      notes:      notesCol  > -1 ? (cells[notesCol]||'').trim()  : '',
+      active,
+      isDuplicate,
+      include:    true,
+    });
+  }
+  if (rows.length === 0) return { error: 'No valid data rows found. Check that your CSV has a header row and data below it.' };
+  return { rows };
+}
+
+// Handles quoted fields and commas inside quotes
+function parseCSVRow(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === ',' && !inQ) {
+      result.push(cur); cur = '';
+    } else cur += c;
+  }
+  result.push(cur);
+  return result;
+}
+
+function renderCSVPreview(rows) {
+  const dupCount = rows.filter(r=>r.isDuplicate).length;
+  document.getElementById('csv-preview').classList.remove('hidden');
+  document.getElementById('csv-count').textContent = rows.length;
+  document.getElementById('csv-dup-info').textContent = dupCount > 0 ? `⚠️ ${dupCount} duplicate username${dupCount>1?'s':''} already exist` : '';
+  document.getElementById('csv-import-btn').classList.remove('hidden');
+  document.getElementById('csv-error').classList.add('hidden');
+
+  const tbody = document.getElementById('csv-preview-body');
+  tbody.innerHTML = rows.map((r,i) => {
+    const dupBadge = r.isDuplicate ? '<span class="badge b-failed" style="font-size:10px">Duplicate</span>' : '<span class="badge b-active" style="font-size:10px">New</span>';
+    return `<tr style="${r.isDuplicate?'opacity:0.6':''}">
+      <td><input type="checkbox" class="csv-row-cb" data-idx="${i}" ${r.include?'checked':''} style="accent-color:var(--accent)" onchange="_csvParsed[${i}].include=this.checked;updateCSVImportBtn()"></td>
+      <td style="font-weight:700">${esc(r.name||'—')}</td>
+      <td style="font-size:12px;color:var(--text2)">${esc(r.username||'—')}</td>
+      <td style="font-family:monospace;font-size:12px;color:var(--text2)">${esc(r.userId||'—')}</td>
+      <td style="font-size:12px;color:var(--text2)">${esc(r.email||'—')}</td>
+      <td style="font-size:12px;color:var(--text2)">${esc(r.phone||'—')}</td>
+      <td style="color:var(--text2);font-size:12px">${esc(r.notes||'—')}</td>
+      <td><span class="badge ${r.active?'b-active':'b-inactive'}">${r.active?'Active':'Inactive'}</span></td>
+      <td>${dupBadge}</td>
+    </tr>`;
+  }).join('');
+  updateCSVImportBtn();
+}
+
+function toggleAllCSV(checked) {
+  _csvParsed.forEach(r => r.include = checked);
+  document.querySelectorAll('.csv-row-cb').forEach(cb => cb.checked = checked);
+  updateCSVImportBtn();
+}
+
+function updateCSVImportBtn() {
+  const count = _csvParsed.filter(r=>r.include).length;
+  const btn = document.getElementById('csv-import-btn');
+  if (btn) { btn.textContent = `Import ${count} Flipper${count!==1?'s':''}`; btn.disabled = count===0; }
+}
+
+async function confirmImportCSV() {
+  const toImport = _csvParsed.filter(r=>r.include);
+  let added = 0, skipped = 0;
+  const existingNames = new Set(flippers.map(f=>(f.name||f.username||'').toLowerCase()));
+  for (const r of toImport) {
+    const key = (r.name||r.username||'').toLowerCase();
+    if (existingNames.has(key)) { skipped++; continue; }
+    flippers.push({ id: uid(), createdAt: Date.now(), name: r.name, username: r.username, userId: r.userId, email: r.email, phone: r.phone, notes: r.notes, active: r.active });
+    existingNames.add(key);
+    added++;
+  }
+  await saveFlippers();
+  closeModalForce();
+  toast(`✓ Imported ${added} flipper${added!==1?'s':''}${skipped>0?' · '+skipped+' duplicates skipped':''}`, 'success');
+  render();
+}
+
+function showCSVError(msg) {
+  const el = document.getElementById('csv-error');
+  if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+  document.getElementById('csv-preview').classList.add('hidden');
+  document.getElementById('csv-import-btn')?.classList.add('hidden');
+}
+
+function downloadFlipperTemplate() {
+  const csv = `name,discord_name,user_id,email,phone,notes,active\nJohn Smith,johnflips,123456789012345678,john@example.com,+15550001111,Fast payment,true\nSarah Jones,ticketqueen,987654321098765432,sarah@example.com,,Occasional delays,true\nMike R,resellpro,,mike@example.com,+15550003333,,true`;
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'flippers-template.csv';
+  a.click();
+  toast('Template downloaded', 'info');
+}
+
+// ─────────────────────────────────────────────
+//  DISCORD API
+// ─────────────────────────────────────────────
+async function sendDiscordDM(token, userId, message) {
+  try {
+    const res = await fetch('https://divine-fog-6fcd.gregconder.workers.dev/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, userId, message })
+    });
+    return await res.json();
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+}
+
+function buildMessage(saleName, codes) {
+  const tmpl = settings.messageTemplate || '🎟️ **{sale}** presale code(s) for you:\n{codes}';
+  const codeStr = codes.length === 1 ? `\`${codes[0]}\`` : codes.map(c=>`• \`${c}\``).join('\n');
+  return tmpl.replace('{sale}', saleName).replace('{codes}', codeStr);
+}
+
+// ─────────────────────────────────────────────
+//  UTILS
+// ─────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d+'T12:00:00');
+  return dt.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+}
+
+let _toastTimer;
+function toast(msg, type='info') {
+  const el = document.getElementById('toast');
+  const icons = { success:'✓', error:'✕', info:'ℹ' };
+  document.getElementById('toast-icon').textContent = icons[type]||'ℹ';
+  document.getElementById('toast-msg').textContent = msg;
+  el.className = `t-${type}`;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>el.classList.remove('show'), 3200);
+}
+
+function bindEvents() {
+  // Keyboard shortcuts
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
