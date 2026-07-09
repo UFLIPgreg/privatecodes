@@ -290,10 +290,15 @@ async function savePresales() {
   catch(e) { toast('Save error: '+e.message, 'error'); }
 }
 async function saveSettings() {
-  localStorage.setItem('pd_bot_token', settings.botToken);
+  lsSet('pd_bot_token', settings.botToken);
   try { await dbUpsert('pd_settings', [{ id: 'global', messageTemplate: settings.messageTemplate }]); }
   catch(e) { toast('Settings error: '+e.message, 'error'); }
 }
+
+// Safe localStorage wrappers (some browsers sandbox local HTML files)
+function lsGet(key, def='') { try { return localStorage.getItem(key) ?? def; } catch { return def; } }
+function lsSet(key, val)    { try { localStorage.setItem(key, val); } catch {} }
+function lsRemove(key)      { try { localStorage.removeItem(key); } catch {} }
 
 function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
 
@@ -304,7 +309,7 @@ async function init() {
   document.getElementById('loader').style.display = 'flex';
   try {
     const [fl, ps, st] = await Promise.all([
-      dbGet('pd_flippers', '?order=createdAt.asc'),
+      dbGet('pd_flippers', '?order=name.asc'),
       dbGet('pd_presales', '?order=createdAt.desc'),
       dbGet('pd_settings', '?id=eq.global')
     ]);
@@ -312,7 +317,7 @@ async function init() {
     presales = ps || [];
     const remote = st?.[0] || {};
     settings = {
-      botToken: localStorage.getItem('pd_bot_token') || '',
+      botToken: lsGet('pd_bot_token'),
       messageTemplate: remote.messageTemplate || '🎟️ **{sale}** presale code(s) for you:\n{codes}'
     };
   } catch(e) {
@@ -326,7 +331,7 @@ async function refreshData() {
   document.getElementById('loader').style.display = 'flex';
   try {
     const [fl, ps] = await Promise.all([
-      dbGet('pd_flippers', '?order=createdAt.asc'),
+      dbGet('pd_flippers', '?order=name.asc'),
       dbGet('pd_presales', '?order=createdAt.desc')
     ]);
     flippers = fl || [];
@@ -386,10 +391,11 @@ function trustColor(score) {
 //  FLIPPERS TAB
 // ─────────────────────────────────────────────
 function renderFlippers() {
+  const sorted = [...flippers].sort((a,b) => (a.name||a.username||'').localeCompare(b.name||b.username||'', undefined, {sensitivity:'base'}));
   const active = flippers.filter(f => f.active);
   const rows = flippers.length === 0
     ? `<tr><td colspan="8"><div class="empty"><div class="empty-icon">👥</div><div class="empty-title">No flippers yet</div><div class="empty-sub">Add your first flipper to get started.</div></div></td></tr>`
-    : flippers.map(f => `
+    : sorted.map(f => `
       <tr>
         <td style="font-weight:700;font-size:14px">${esc(f.name||'—')}</td>
         <td>
@@ -1145,14 +1151,14 @@ function exportCSV(presaleId) {
 // ─────────────────────────────────────────────
 function saveBotToken() {
   settings.botToken = document.getElementById('bot-token-input').value.trim();
-  localStorage.setItem('pd_bot_token', settings.botToken);
+  lsSet('pd_bot_token', settings.botToken);
   toast('Bot token saved on this device', 'success');
   render();
 }
 function clearBotToken() {
   if (!confirm('Clear the bot token from this device?')) return;
   settings.botToken = '';
-  localStorage.removeItem('pd_bot_token');
+  lsRemove('pd_bot_token');
   render();
 }
 async function testBotToken() {
