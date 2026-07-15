@@ -230,7 +230,7 @@
 //  SUPABASE CONFIG
 // ─────────────────────────────────────────────
 const SUPA_URL = 'https://crnfhbapidpmiokbvcet.supabase.co';
-const SUPA_KEY = 'sb_publishable_6VNzvERvKynznvjJqRGLpg_2Stk3vrl';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybmZoYmFwaWRwbWlva2J2Y2V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4Mjg4MDgsImV4cCI6MjA5ODQwNDgwOH0.dfeetsUHjwuewMMT7IOlXzRr8PXxV0TiWWj5TBvMt2A';
 
 async function dbGet(table, query='') {
   const res = await fetch(`${SUPA_URL}/rest/v1/${table}${query}`, {
