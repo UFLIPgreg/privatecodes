@@ -242,16 +242,21 @@ async function dbGet(table, query='') {
 async function dbUpsert(table, rows) {
   const data = Array.isArray(rows) ? rows : [rows];
   if (!data.length) return;
-  const res = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
-    method: 'POST',
-    headers: {
-      apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`,
-      'Content-Type': 'application/json',
-      Prefer: 'resolution=merge-duplicates,return=minimal'
-    },
-    body: JSON.stringify(data)
-  });
-  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  let res;
+  try {
+    res = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify(data)
+    });
+  } catch(netErr) {
+    throw new Error('Network error: ' + netErr.message + ' — Check console (F12) for CORS details');
+  }
+  if (!res.ok) { const t = await res.text(); throw new Error(`HTTP ${res.status}: ${t}`); }
 }
 async function dbDelete(table, id) {
   const res = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, {
@@ -739,6 +744,16 @@ function renderSettings() {
       </div>
 
       <div class="settings-section card" style="padding:22px;margin-top:16px">
+        <div class="settings-title">Database Connection</div>
+        <div class="settings-sub">Test that your browser can read from and write to Supabase.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="testSupabaseRead()">Test Read</button>
+          <button class="btn btn-secondary" onclick="testSupabaseWrite()">Test Write</button>
+        </div>
+        <div id="supa-test-result" style="margin-top:12px;font-size:13px;font-family:monospace;white-space:pre-wrap;color:var(--text2)"></div>
+      </div>
+
+      <div class="settings-section card" style="padding:22px;margin-top:16px">
         <div class="settings-title">Data</div>
         <div class="settings-sub">Export a backup of all data, or import from a backup file. All changes sync automatically to the shared database.</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -1149,6 +1164,53 @@ function exportCSV(presaleId) {
 // ─────────────────────────────────────────────
 //  SETTINGS ACTIONS
 // ─────────────────────────────────────────────
+async function testSupabaseRead() {
+  const el = document.getElementById('supa-test-result');
+  el.style.color = 'var(--text2)';
+  el.textContent = 'Testing read...';
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/pd_flippers?limit=1`, {
+      headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` }
+    });
+    if (res.ok) {
+      const d = await res.json();
+      el.style.color = 'var(--green)';
+      el.textContent = `✓ Read OK — got ${d.length} row(s) from pd_flippers`;
+    } else {
+      el.style.color = 'var(--red)';
+      el.textContent = `✗ Read failed — HTTP ${res.status}: ${await res.text()}`;
+    }
+  } catch(e) {
+    el.style.color = 'var(--red)';
+    el.textContent = `✗ Read network error: ${e.message}\nOpen F12 Console for details.`;
+  }
+}
+async function testSupabaseWrite() {
+  const el = document.getElementById('supa-test-result');
+  el.style.color = 'var(--text2)';
+  el.textContent = 'Testing write...';
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/pd_settings`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify([{ id: 'global', messageTemplate: settings.messageTemplate || '' }])
+    });
+    if (res.ok) {
+      el.style.color = 'var(--green)';
+      el.textContent = `✓ Write OK — Supabase is accepting writes`;
+    } else {
+      el.style.color = 'var(--red)';
+      el.textContent = `✗ Write failed — HTTP ${res.status}: ${await res.text()}`;
+    }
+  } catch(e) {
+    el.style.color = 'var(--red)';
+    el.textContent = `✗ Write network error: ${e.message}\nOpen F12 Console for details.`;
+  }
+}
 function saveBotToken() {
   settings.botToken = document.getElementById('bot-token-input').value.trim();
   lsSet('pd_bot_token', settings.botToken);
